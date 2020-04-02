@@ -1,0 +1,11 @@
+{
+  "name": "static-server-via-node",
+  "version": "0.0.1",
+  "description": "a simple node static server",
+  "main": "index.js",
+  "author": "vivi",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.9.8"
+  }
+}
