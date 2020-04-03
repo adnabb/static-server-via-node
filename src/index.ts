@@ -6,7 +6,6 @@ import mimeTypeMap from './mimeTypeMap';
 const port = 8089;
 const host = 'localhost';
 const root = 'public';
-let notFoundPage: Buffer;
 
 const getRequestCompletePath = (request: http.IncomingMessage) => {
   let { pathname } = new URL(request.url, `http://${request.headers.host}`);
@@ -14,8 +13,9 @@ const getRequestCompletePath = (request: http.IncomingMessage) => {
   return pathname;
 }
 
-const getFileMimeAndPath = (pathname:string) => {
-  const fileType = pathname.match(/\..*/) ? pathname.match(/\..*/)[0] : '.html';
+const getFileMimeAndPath = (pathname: string) => {
+  let fileType = pathname.match(/\..*/) ? pathname.match(/\..*/)[0] : '';
+  if (!(fileType in mimeTypeMap)) fileType = '.html';
   const { mime, path: filePath } = mimeTypeMap[fileType];
   const readFilePath = filePath ? path.join(root, filePath, pathname) : path.join(root, pathname);
 
@@ -27,14 +27,17 @@ const server = http.createServer((request, response) => {
 
   const requestUrl = getRequestCompletePath(request);
   const { path: readFilePath, mime } = getFileMimeAndPath(requestUrl);
+  let statusCode = 200;
   fs.readFile(readFilePath, (error, data) => {
     if (error) {
       console.error('error', error);
-      response.statusCode = 404;
-      notFoundPage = fs.readFileSync(path.join(root, '404.html'));
+      statusCode = 404;
+      data = fs.readFileSync(path.join(root, '404.html'));
     }
-    response.setHeader('Content-Type', mime);
-    response.end(data || notFoundPage);
+    response.writeHead(statusCode, {
+      'Content-Type': mime,
+      'Content-Length': data.length,
+    }).end(data);
   });
 });
 
