@@ -2,6 +2,9 @@
   "name": "static-server-via-node",
   "version": "0.0.1",
   "description": "a simple node static server",
+  "bin": {
+    "static": "src/cli.ts"
+  },
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev src/index.ts"
@@ -10,5 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^13.9.8"
+  },
+  "dependencies": {
+    "commander": "^5.0.0"
   }
 }
