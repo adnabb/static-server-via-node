@@ -15,6 +15,7 @@
     "@types/node": "^13.9.8"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "commander": "^5.0.0"
   }
 }
