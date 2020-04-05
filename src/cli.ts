@@ -16,7 +16,7 @@ if (argv.length >= 3 && argv[3-1].indexOf('-') < 0) { bootPath = argv[2]; }
 const portIndex = argv.indexOf('-p') >= 0 ? argv.indexOf('-p') : argv.indexOf('--port');
 if (portIndex >= 0) {
   const customPort = parseInt(argv[portIndex + 1], 10);
-  setPort(customPort);
+  if(!isNaN(customPort)) setPort(customPort);
 }
 
 createServer(bootPath);
