@@ -1,6 +1,6 @@
 {
   "name": "static-server-via-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a simple node static server",
   "bin": {
     "static": "dist/cli.js"
@@ -10,7 +10,8 @@
     "start": "ts-node-dev src/index.ts"
   },
   "files": [
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "public/404.html"
   ],
   "repository": {
     "type": "git",
