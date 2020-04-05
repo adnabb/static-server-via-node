@@ -21,6 +21,22 @@ cd public
 static
 ```
 
+支持配置自己想运行的目录
+
+```
+static public // 当前目录下的public文件夹
+```
+
+支持配置自己自定义的端口号
+
+```
+static -p 8080
+// or
+static --port 8080
+```
+
+更多内容可以输入命令 `static -h`了解
+
 ### 面向开发者
 
 1. clone project
