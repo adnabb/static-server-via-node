@@ -1,13 +1,20 @@
 {
   "name": "static-server-via-node",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a simple node static server",
   "bin": {
-    "static": "src/cli.ts"
+    "static": "dist/src/cli.js"
   },
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "start": "ts-node-dev src/index.ts"
+  },
+  "files": [
+    "dist/**/*.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adnabb/static-server-via-node.git"
   },
   "author": "vivi",
   "license": "MIT",
