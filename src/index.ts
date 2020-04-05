@@ -5,7 +5,7 @@ import * as colors from 'colors';
 import mimeTypeMap from './mimeTypeMap';
 
 let _root:string;
-const port = 8089;
+let port = 8089;
 const host = 'localhost';
 
 const getRequestCompletePath = (request: http.IncomingMessage) => {
@@ -14,7 +14,7 @@ const getRequestCompletePath = (request: http.IncomingMessage) => {
   return pathname;
 }
 
-const getFileMimeAndPath = (pathname: string) => {
+const getFileMimeAndCompletePath = (pathname: string) => {
   let fileType = pathname.match(/\..*/) ? pathname.match(/\..*/)[0] : '';
   // default fileType: .html
   if (!(fileType in mimeTypeMap)) fileType = '.html';
@@ -39,7 +39,19 @@ const handleNotGetRequest = (response:http.ServerResponse) => {
   response.end();
 }
 
-const get404HTML = () => fs.readFileSync(path.resolve(__dirname, '../public', '404.html'));
+const get404HTML = (rootPath:string) => {
+  let htmlBuffer:Buffer;
+  return new Promise((resolve) => {
+    fs.readFile(path.join(rootPath, '404.html'), (error, data) => {
+      if (error) {
+        htmlBuffer = fs.readFileSync(path.resolve(__dirname, '../public', '404.html'));
+      } else {
+        htmlBuffer = data;
+      }
+      resolve(htmlBuffer);
+    });
+  })
+}
 
 const setConsoleColorTheme = () => {
   colors.setTheme({
@@ -58,22 +70,24 @@ const setConsoleColorTheme = () => {
 
 let _server:http.Server;
 
-const createServer = (customPath?:string) => {
-   _root = getRootPath(customPath);
+export const setPort = (customPort:number) => { port = customPort; }
+
+export const createServer = (customPath?:string) => {
+   _root = getRootPath(customPath); //  eg. G:\Code\static-server-via-node
    setConsoleColorTheme();
 
   _server = http.createServer((request, response) => {
     if (request.method !== 'GET') { handleNotGetRequest(response); return; }
 
-    const requestUrl = getRequestCompletePath(request);
-    const { path: readFilePath, mime } = getFileMimeAndPath(requestUrl);
+    const requestUrl = getRequestCompletePath(request); // eg. /index.html
+    const { path: readFilePath, mime } = getFileMimeAndCompletePath(requestUrl); // eg. G:\Code\static-server-via-node\index.html
     let statusCode = 200;
-    fs.readFile(readFilePath, (error, data) => {
+    fs.readFile(readFilePath, async (error, data) => {
       if (error) {
         // @ts-ignore
         console.error('error'.error, error);
         statusCode = 404;
-        data = get404HTML();
+        data = await get404HTML(_root);
       }
       response.writeHead(statusCode, {
         'Content-Type': mime,
@@ -88,5 +102,3 @@ const createServer = (customPath?:string) => {
     console.info(`you are listening http://${host}:${port}`.info);
   });
 }
-
-export default createServer;
