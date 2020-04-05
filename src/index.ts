@@ -9,13 +9,14 @@ let port = 8089;
 const host = 'localhost';
 
 const getRequestCompletePath = (request: http.IncomingMessage) => {
-  let { pathname } = new URL(request.url, `http://${request.headers.host}`);
+  let { pathname } = new URL(request.url || '', `http://${request.headers.host}`);
   if (pathname === '/') pathname = '/index.html';
   return pathname;
 }
 
 const getFileMimeAndCompletePath = (pathname: string) => {
-  let fileType = pathname.match(/\..*/) ? pathname.match(/\..*/)[0] : '';
+  // @ts-ignore
+  let fileType:string = pathname.match(/\..*/) ? pathname.match(/\..*/)[0] : '';
   // default fileType: .html
   if (!(fileType in mimeTypeMap)) fileType = '.html';
   const { mime, path: filePath } = mimeTypeMap[fileType];
@@ -24,7 +25,7 @@ const getFileMimeAndCompletePath = (pathname: string) => {
   return { mime: mime, path: readFilePath, };
 };
 
-const getRootPath = (customPath:string) => {
+const getRootPath = (customPath?:string) => {
   if (!customPath) {
     return process.cwd();
   } else if (path.isAbsolute(customPath)) {
@@ -87,6 +88,8 @@ export const createServer = (customPath?:string) => {
         // @ts-ignore
         console.error('error'.error, error);
         statusCode = 404;
+        // @ts-ignore
+        // TODO: FIX THIS
         data = await get404HTML(_root);
       }
       response.writeHead(statusCode, {
