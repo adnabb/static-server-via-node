@@ -4,6 +4,25 @@
 
 ## 启动
 
+### 建议目录格式
+![1.png](https://i.loli.net/2020/04/06/noKP7qwcyZWO9CR.png)
+
+public<br/>
+│   index.html<br/>
+│   404.html    <br/>
+│<br/>
+└───css<br/>
+│   │   index.css<br/>
+│   │<br/>
+│   └───images<br/>
+│       │   favicon.ico<br/>
+│       │   other.jpg<br/>
+│       │   ...<br/>
+│   <br/>
+└───js<br/>
+    │   index.js<br/>
+
+
 ### 面向用户
 
 1. 全局安装
@@ -49,9 +68,11 @@ git clone https://github.com/adnabb/static-server-via-node.git
 yarn global add typescript
 ```
 
-3. 全局安装 ts-node-dev
+这里改用ts-node，是由于发现ts-node-dev在操作readline时，有bug
+
+3. 全局安装 ts-node
 ```
-yarn global add ts-node-dev
+yarn global add ts-node
 ```
 
 4. 安装项目依赖
@@ -63,5 +84,5 @@ yarn install
 
 5. 启动
 ```
-yarn start
+yarn start public
 ```
